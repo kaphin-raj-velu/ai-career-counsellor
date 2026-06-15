@@ -1,0 +1,107 @@
+# Career Database - Sample data for Indian careers
+CAREERS_DATABASE = [
+    {
+        "id": "eng_cs",
+        "name": "Computer Science Engineering",
+        "category": "Engineering",
+        "description": "Design and develop software, applications, and computer systems",
+        "required_education": ["B.Tech/B.E in Computer Science", "JEE Main/Advanced"],
+        "required_skills": ["Programming", "Problem Solving", "Mathematics", "Logical Thinking"],
+        "average_salary": {"min": 400000, "max": 2000000, "currency": "INR"},
+        "job_outlook": "Excellent",
+        "top_colleges": ["IIT Delhi", "IIT Bombay", "BITS Pilani", "NIT Trichy"],
+        "entrance_exams": ["JEE Main", "JEE Advanced", "BITSAT"],
+        "related_careers": ["Data Science", "AI/ML Engineer", "Software Developer"]
+    },
+    {
+        "id": "med_mbbs",
+        "name": "Medicine (MBBS)",
+        "category": "Medical",
+        "description": "Practice medicine, diagnose and treat patients",
+        "required_education": ["MBBS (5.5 years)", "NEET qualification"],
+        "required_skills": ["Science Knowledge", "Patience", "Communication", "Empathy"],
+        "average_salary": {"min": 600000, "max": 3000000, "currency": "INR"},
+        "job_outlook": "Excellent",
+        "top_colleges": ["AIIMS Delhi", "CMC Vellore", "JIPMER", "KGMU Lucknow"],
+        "entrance_exams": ["NEET UG"],
+        "related_careers": ["Surgeon", "Pediatrician", "Cardiologist"]
+    },
+    {
+        "id": "ca",
+        "name": "Chartered Accountancy",
+        "category": "Commerce",
+        "description": "Manage financial accounts, auditing, and taxation",
+        "required_education": ["CA Foundation", "CA Intermediate", "CA Final"],
+        "required_skills": ["Mathematics", "Attention to Detail", "Analytical Skills"],
+        "average_salary": {"min": 700000, "max": 2500000, "currency": "INR"},
+        "job_outlook": "Good",
+        "top_colleges": ["ICAI Authorized Institutes"],
+        "entrance_exams": ["CA Foundation Exam"],
+        "related_careers": ["Financial Analyst", "Tax Consultant", "Auditor"]
+    },
+    {
+        "id": "law",
+        "name": "Law (LLB)",
+        "category": "Arts & Humanities",
+        "description": "Practice law, represent clients in legal matters",
+        "required_education": ["5-year Integrated LLB or 3-year LLB after graduation"],
+        "required_skills": ["Communication", "Research", "Critical Thinking", "Debate"],
+        "average_salary": {"min": 400000, "max": 2000000, "currency": "INR"},
+        "job_outlook": "Good",
+        "top_colleges": ["NLSIU Bangalore", "NALSAR Hyderabad", "NLU Delhi"],
+        "entrance_exams": ["CLAT", "LSAT"],
+        "related_careers": ["Corporate Lawyer", "Judge", "Legal Advisor"]
+    },
+    {
+        "id": "data_science",
+        "name": "Data Science",
+        "category": "Technology",
+        "description": "Analyze data to extract insights and build predictive models",
+        "required_education": ["B.Tech/M.Tech or Statistics/Mathematics degree"],
+        "required_skills": ["Python", "Statistics", "Machine Learning", "SQL"],
+        "average_salary": {"min": 600000, "max": 2500000, "currency": "INR"},
+        "job_outlook": "Excellent",
+        "top_colleges": ["IIT Madras", "ISI Kolkata", "IIT Delhi"],
+        "entrance_exams": ["JEE Advanced", "GATE"],
+        "related_careers": ["ML Engineer", "Data Analyst", "AI Researcher"]
+    },
+    {
+        "id": "psychology",
+        "name": "Psychology",
+        "category": "Arts & Sciences",
+        "description": "Study human behavior and mental processes",
+        "required_education": ["BA/BSc Psychology", "MA/MSc Psychology"],
+        "required_skills": ["Empathy", "Listening", "Research", "Counselling"],
+        "average_salary": {"min": 300000, "max": 1200000, "currency": "INR"},
+        "job_outlook": "Good",
+        "top_colleges": ["Delhi University", "TISS Mumbai", "Christ University"],
+        "entrance_exams": ["University Entrance Exams"],
+        "related_careers": ["Clinical Psychologist", "Counsellor", "HR Professional"]
+    },
+    {
+        "id": "civil_eng",
+        "name": "Civil Engineering",
+        "category": "Engineering",
+        "description": "Design and construct infrastructure like buildings, roads, bridges",
+        "required_education": ["B.Tech/B.E in Civil Engineering"],
+        "required_skills": ["Mathematics", "Design", "Project Management", "Physics"],
+        "average_salary": {"min": 350000, "max": 1500000, "currency": "INR"},
+        "job_outlook": "Good",
+        "top_colleges": ["IIT Kharagpur", "NIT Surathkal", "Anna University"],
+        "entrance_exams": ["JEE Main", "JEE Advanced"],
+        "related_careers": ["Structural Engineer", "Urban Planner", "Construction Manager"]
+    },
+    {
+        "id": "fashion_design",
+        "name": "Fashion Design",
+        "category": "Design & Arts",
+        "description": "Create clothing, accessories, and fashion concepts",
+        "required_education": ["Fashion Design Degree (4 years)"],
+        "required_skills": ["Creativity", "Drawing", "Trend Analysis", "Sewing"],
+        "average_salary": {"min": 250000, "max": 1000000, "currency": "INR"},
+        "job_outlook": "Fair",
+        "top_colleges": ["NIFT Delhi", "Pearl Academy", "FIT New York"],
+        "entrance_exams": ["NIFT Entrance Exam"],
+        "related_careers": ["Textile Designer", "Fashion Stylist", "Costume Designer"]
+    }
+]

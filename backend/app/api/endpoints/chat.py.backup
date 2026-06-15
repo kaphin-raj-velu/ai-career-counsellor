@@ -1,0 +1,119 @@
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
+from typing import List, Optional
+from datetime import datetime
+
+from app.models.chat import ChatSession, Message, MessageRole
+from app.models.profile import StudentProfile
+from app.services.ai_service import ai_service
+
+router = APIRouter()
+
+class ChatMessageRequest(BaseModel):
+    message: str
+    session_id: Optional[str] = None
+
+class ChatMessageResponse(BaseModel):
+    session_id: str
+    message: str
+    timestamp: datetime
+
+@router.post("/message", response_model=ChatMessageResponse)
+async def send_message(request: ChatMessageRequest, user_id: str):
+    """Send a message and get AI response"""
+    
+    try:
+        # Get or create chat session
+        if request.session_id:
+            session = await ChatSession.get(request.session_id)
+            if not session:
+                raise HTTPException(status_code=404, detail="Session not found")
+        else:
+            session = ChatSession(user_id=user_id)
+            await session.insert()
+        
+        # Get student profile for context
+        profile = await StudentProfile.find_one(StudentProfile.user_id == user_id)
+        profile_dict = profile.dict() if profile else None
+        
+        # Prepare conversation history
+        conversation_history = [
+            {"role": msg.role.value, "content": msg.content}
+            for msg in session.messages
+        ]
+        
+        # Get AI response
+        ai_response = await ai_service.get_career_counselling_response(
+            user_message=request.message,
+            conversation_history=conversation_history,
+            student_profile=profile_dict
+        )
+        
+        # Save messages
+        user_msg = Message(role=MessageRole.USER, content=request.message)
+        assistant_msg = Message(role=MessageRole.ASSISTANT, content=ai_response)
+        
+        session.messages.extend([user_msg, assistant_msg])
+        session.updated_at = datetime.utcnow()
+        await session.save()
+        
+        return ChatMessageResponse(
+            session_id=str(session.id),
+            message=ai_response,
+            timestamp=assistant_msg.timestamp
+        )
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/history/{session_id}")
+async def get_chat_history(session_id: str):
+    """Get chat history for a session"""
+    
+    session = await ChatSession.get(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    return {
+        "session_id": str(session.id),
+        "messages": [
+            {
+                "role": msg.role.value,
+                "content": msg.content,
+                "timestamp": msg.timestamp
+            }
+            for msg in session.messages
+        ]
+    }
+
+@router.get("/sessions")
+async def get_user_sessions(user_id: str):
+    """Get all chat sessions for a user"""
+    
+    sessions = await ChatSession.find(
+        ChatSession.user_id == user_id,
+        ChatSession.is_active == True
+    ).sort(-ChatSession.created_at).to_list()
+    
+    return [
+        {
+            "session_id": str(session.id),
+            "created_at": session.created_at,
+            "message_count": len(session.messages),
+            "last_updated": session.updated_at
+        }
+        for session in sessions
+    ]
+
+@router.delete("/session/{session_id}")
+async def delete_session(session_id: str):
+    """Delete a chat session"""
+    
+    session = await ChatSession.get(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    session.is_active = False
+    await session.save()
+    
+    return {"message": "Session deleted successfully"}

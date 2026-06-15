@@ -1,0 +1,11 @@
+AI Career Counsellor Chatbot - Complete Project Structure
+==========================================================
+
+This project uses a modern full-stack architecture:
+- Frontend: Next.js 14 with TypeScript, Tailwind CSS
+- Backend: Python FastAPI
+- AI: OpenAI/Anthropic API
+- Database: MongoDB
+- Real-time: WebSocket for chat
+
+Created for Hackathon - Team 48

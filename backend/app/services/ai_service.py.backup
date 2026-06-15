@@ -1,0 +1,164 @@
+import os
+from typing import List, Dict, Optional
+from openai import AsyncOpenAI
+from anthropic import AsyncAnthropic
+
+class AIService:
+    """Service for AI-powered career counselling using OpenAI or Anthropic"""
+    
+    def __init__(self):
+        self.provider = os.getenv("AI_PROVIDER", "openai")  # openai or anthropic
+        
+        if self.provider == "openai":
+            self.client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            self.model = "gpt-4-turbo-preview"
+        elif self.provider == "anthropic":
+            self.client = AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+            self.model = "claude-3-sonnet-20240229"
+    
+    async def get_career_counselling_response(
+        self,
+        user_message: str,
+        conversation_history: List[Dict[str, str]],
+        student_profile: Optional[Dict] = None
+    ) -> str:
+        """Get AI response for career counselling chat"""
+        
+        # Build system prompt with student context
+        system_prompt = self._build_system_prompt(student_profile)
+        
+        # Prepare messages
+        messages = [{"role": "system", "content": system_prompt}]
+        messages.extend(conversation_history)
+        messages.append({"role": "user", "content": user_message})
+        
+        if self.provider == "openai":
+            response = await self._get_openai_response(messages)
+        else:
+            response = await self._get_anthropic_response(messages)
+        
+        return response
+    
+    def _build_system_prompt(self, student_profile: Optional[Dict] = None) -> str:
+        """Build system prompt with student context"""
+        
+        base_prompt = """You are an expert AI career counsellor for Indian high school students (Grades 9-12). 
+Your role is to provide personalized, accurate, and encouraging career guidance.
+
+Key responsibilities:
+- Understand student interests, strengths, and academic performance
+- Suggest suitable career paths based on Indian education system
+- Provide information about courses, colleges, and entrance exams
+- Be supportive, patient, and motivational
+- Give practical, actionable advice
+- Consider both traditional and emerging career options
+- Discuss career prospects, salary ranges, and growth opportunities
+
+Always:
+- Ask clarifying questions when needed
+- Provide evidence-based recommendations
+- Consider student's location and background
+- Mention relevant entrance exams (JEE, NEET, CLAT, etc.)
+- Suggest backup options and alternative paths
+- Be honest about challenges but remain encouraging
+"""
+        
+        if student_profile:
+            context = f"""
+
+Current Student Profile:
+- Grade: {student_profile.get('grade', 'Not specified')}
+- Stream: {student_profile.get('stream', 'Not specified')}
+- Subjects: {', '.join(student_profile.get('subjects', []))}
+- Interests: {', '.join(student_profile.get('interests', []))}
+- Location: {student_profile.get('location', {}).get('city', 'Not specified')}, {student_profile.get('location', {}).get('state', 'Not specified')}
+- Academic Performance: {student_profile.get('academic_performance', 'Not specified')}
+
+Use this information to personalize your guidance.
+"""
+            base_prompt += context
+        
+        return base_prompt
+    
+    async def _get_openai_response(self, messages: List[Dict]) -> str:
+        """Get response from OpenAI"""
+        response = await self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            temperature=0.7,
+            max_tokens=800
+        )
+        return response.choices[0].message.content
+    
+    async def _get_anthropic_response(self, messages: List[Dict]) -> str:
+        """Get response from Anthropic Claude"""
+        # Extract system message
+        system_msg = next((m["content"] for m in messages if m["role"] == "system"), "")
+        conversation = [m for m in messages if m["role"] != "system"]
+        
+        response = await self.client.messages.create(
+            model=self.model,
+            max_tokens=800,
+            system=system_msg,
+            messages=conversation
+        )
+        return response.content[0].text
+    
+    async def analyze_aptitude_results(
+        self,
+        answers: List[Dict],
+        questions: List[Dict]
+    ) -> Dict:
+        """Analyze aptitude test results and generate insights"""
+        
+        # Calculate scores (simplified - in production, use proper scoring logic)
+        category_scores = {
+            "logical": 0,
+            "verbal": 0,
+            "numerical": 0,
+            "spatial": 0,
+            "interest": 0
+        }
+        
+        # Scoring logic here (to be implemented based on actual questions)
+        
+        prompt = f"""Based on the following aptitude test results, provide:
+1. Key strengths (2-3 areas)
+2. Areas for improvement (1-2 areas)
+3. Top 3 recommended career fields
+4. Brief explanation for each recommendation
+
+Scores:
+- Logical: {category_scores['logical']}
+- Verbal: {category_scores['verbal']}
+- Numerical: {category_scores['numerical']}
+- Spatial: {category_scores['spatial']}
+- Interest-based: {category_scores['interest']}
+
+Provide output in JSON format with keys: strengths, weaknesses, recommended_fields, explanation
+"""
+        
+        messages = [
+            {"role": "system", "content": "You are an expert career psychologist analyzing aptitude test results."},
+            {"role": "user", "content": prompt}
+        ]
+        
+        if self.provider == "openai":
+            response = await self._get_openai_response(messages)
+        else:
+            response = await self._get_anthropic_response(messages)
+        
+        # Parse response and return structured data
+        import json
+        try:
+            return json.loads(response)
+        except:
+            return {
+                "strengths": ["Analytical Thinking"],
+                "weaknesses": ["Time Management"],
+                "recommended_fields": ["Engineering", "Technology", "Business"],
+                "explanation": response
+            }
+
+# Singleton instance
+ai_service = AIService()
