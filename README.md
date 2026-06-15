@@ -204,15 +204,7 @@ npm test
 2. Set environment variables
 3. Deploy automatically
 
-## 🤝 Contributing
 
-Team Members:
-- SREENIDHI S (24BAD114)
-- SHASWANTH M (24BAE048)
-- SRIKANTH A (24BMC062)
-- KAPHIN RAJ VELU GK (24BCS121)
-- KALAISELVAN G (24BEE053)
-- SANJAY Y (24BCE411)
 
 ## 📄 License
 
@@ -231,3 +223,5 @@ For questions or issues, please contact the team or create an issue in the repos
 ---
 
 **Built with ❤️ for Indian Students**
+
+LIVE DEMO:https://drive.google.com/file/d/1yCLGh2WEVxfPmakRZL_CvXr59Fs5yCpN/view
